@@ -1,1 +1,5 @@
-
+com:
+  pavelsvistetsky:
+    camera-server:
+      base-url: "http://www.mocky.io/v2/"
+      all-cameras-path: "5c51b9dd3400003252129fb5"
