@@ -1,38 +1,24 @@
 package com.pavelsvistetsky.testtask.service;
 
+import com.pavelsvistetsky.testtask.base.BaseAggregatorServiceTest;
 import com.pavelsvistetsky.testtask.model.dto.CameraAggregatedDto;
 import com.pavelsvistetsky.testtask.model.dto.CameraDto;
 import com.pavelsvistetsky.testtask.model.dto.SourceDataDto;
 import com.pavelsvistetsky.testtask.model.dto.TokenDataDto;
-import com.pavelsvistetsky.testtask.model.enums.URLType;
 import com.pavelsvistetsky.testtask.service.impl.AggregatorReactiveServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.net.URI;
-import java.util.UUID;
-
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
 @SuppressWarnings({"rawtypes", "unchecked"})
-class AggregatorReactiveServiceTest {
-
-    private static final String SOURCE_DATA_URL = "1S";
-    private static final String TOKEN_DATA_URL = "1T";
-    private static final long ID = 1L;
-    private static final URLType URL_TYPE = URLType.LIVE;
-    private static final String VIDEO_URL = "https://example.com";
-    private static final int TTL = 255;
-    private static final UUID VALUE = UUID.randomUUID();
+class AggregatorReactiveServiceTest extends BaseAggregatorServiceTest {
 
     @Mock
     private WebClient.RequestHeadersSpec sourceRequestHeadersSpec;
@@ -58,17 +44,13 @@ class AggregatorReactiveServiceTest {
 
     @BeforeEach
     void setUp() {
-        CameraDto cameraDtoResponse = new CameraDto(ID, SOURCE_DATA_URL, TOKEN_DATA_URL);
-        SourceDataDto sourceDataDtoResponse = new SourceDataDto(URL_TYPE, VIDEO_URL);
-        TokenDataDto tokenDataDtoResponse = new TokenDataDto(VALUE, TTL);
-
         when(client.get()).thenReturn(requestHeadersUriSpec);
 
-        when(requestHeadersUriSpec.uri(URI.create(SOURCE_DATA_URL))).thenReturn(sourceRequestHeadersSpec);
+        when(requestHeadersUriSpec.uri(SOURCE_DATA_URI)).thenReturn(sourceRequestHeadersSpec);
         when(sourceRequestHeadersSpec.retrieve()).thenReturn(sourceResponseSpec);
         when(sourceResponseSpec.bodyToMono(SourceDataDto.class)).thenReturn(Mono.just(sourceDataDtoResponse));
 
-        when(requestHeadersUriSpec.uri(URI.create(TOKEN_DATA_URL))).thenReturn(tokenRequestHeadersSpec);
+        when(requestHeadersUriSpec.uri(TOKEN_DATA_URI)).thenReturn(tokenRequestHeadersSpec);
         when(tokenRequestHeadersSpec.retrieve()).thenReturn(tokenResponseSpec);
         when(tokenResponseSpec.bodyToMono(TokenDataDto.class)).thenReturn(Mono.just(tokenDataDtoResponse));
 
