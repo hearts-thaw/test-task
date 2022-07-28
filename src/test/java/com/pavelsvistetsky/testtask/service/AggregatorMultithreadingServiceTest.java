@@ -6,6 +6,8 @@ import com.pavelsvistetsky.testtask.model.dto.CameraDto;
 import com.pavelsvistetsky.testtask.model.dto.SourceDataDto;
 import com.pavelsvistetsky.testtask.model.dto.TokenDataDto;
 import com.pavelsvistetsky.testtask.service.impl.AggregatorMultithreadingServiceImpl;
+import com.pavelsvistetsky.testtask.service.impl.integration.ExternalDataServiceImpl;
+import com.pavelsvistetsky.testtask.service.integration.ExternalDataService;
 import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +37,8 @@ class AggregatorMultithreadingServiceTest extends BaseAggregatorServiceTest {
         when(restTemplate.getForEntity(ArgumentMatchers.<String>any(), eq(CameraDto[].class)))
                 .thenReturn(ResponseEntity.ok(Arrays.array(cameraDtoResponse)));
 
-        service = new AggregatorMultithreadingServiceImpl(restTemplate);
+        final ExternalDataService externalDataService = new ExternalDataServiceImpl(restTemplate);
+        service = new AggregatorMultithreadingServiceImpl(restTemplate, externalDataService);
     }
 
     @Test
